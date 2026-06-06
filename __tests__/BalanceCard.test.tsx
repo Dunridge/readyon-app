@@ -28,7 +28,7 @@ describe('BalanceCard', () => {
     render(<BalanceCard balance={BASE_BALANCE} optimisticDeductions={3} />);
     // Displayed = 10 - 3 = 7
     expect(screen.getByText('7')).toBeInTheDocument();
-    expect(screen.getByText(/3 pending deduction/i)).toBeInTheDocument();
+    expect(screen.getByText(/3 pending/i)).toBeInTheDocument();
   });
 
   it('does not go below zero with large optimistic deductions', () => {

@@ -28,8 +28,8 @@ describe('RequestForm', () => {
       </Wrapper>
     );
     expect(screen.getByLabelText(/location/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/start date/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/end date/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^start$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^end$/i)).toBeInTheDocument();
   });
 
   it('shows error when submitting with no dates', async () => {
@@ -50,8 +50,8 @@ describe('RequestForm', () => {
         <RequestForm employeeId="emp-001" balances={BALANCES} />
       </Wrapper>
     );
-    const startInput = screen.getByLabelText(/start date/i);
-    const endInput = screen.getByLabelText(/end date/i);
+    const startInput = screen.getByLabelText(/^start$/i);
+    const endInput = screen.getByLabelText(/^end$/i);
     fireEvent.change(startInput, { target: { value: '2026-07-07' } }); // Tuesday
     fireEvent.change(endInput, { target: { value: '2026-07-09' } }); // Thursday
     await waitFor(() => {
@@ -68,8 +68,8 @@ describe('RequestForm', () => {
         />
       </Wrapper>
     );
-    const startInput = screen.getByLabelText(/start date/i);
-    const endInput = screen.getByLabelText(/end date/i);
+    const startInput = screen.getByLabelText(/^start$/i);
+    const endInput = screen.getByLabelText(/^end$/i);
     fireEvent.change(startInput, { target: { value: '2026-07-07' } });
     fireEvent.change(endInput, { target: { value: '2026-07-09' } });
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
