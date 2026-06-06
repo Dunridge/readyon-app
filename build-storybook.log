@@ -1,0 +1,31 @@
+
+> readyon-app@0.1.0 build-storybook /Users/maksym_polinka/Desktop/Projects/readyon-app
+> storybook build -o storybook-static "--output-dir=/private/var/folders/s5/9_vz09d95kn40w81hvszyb680000gn/T/chromatic--72878-U94Jrmhnqjih"
+
+[1m@storybook/core v8.6.18
+[22m
+info => Cleaning outputDir: [36m../../../../../private/var/folders/s5/9_vz09d95kn40w81hvszyb680000gn/T/chromatic--72878-U94Jrmhnqjih[39m
+info => Loading presets
+[38;2;241;97;97mError: Cannot find module 'next/config'
+Require stack:
+- ./node_modules/.pnpm/@storybook+nextjs@8.6.18_esbuild@0.25.12_next@16.2.7_@babel+core@7.29.7_react-dom@19.2.4_reac_u5xoh5k7tp75m2lue5g45u3c7y/node_modules/@storybook/nextjs/dist/preset.js
+- ./node_modules/.pnpm/@storybook+core@8.6.18_storybook@8.6.18/node_modules/@storybook/core/dist/common/index.cjs
+- ./node_modules/.pnpm/storybook@8.6.18/node_modules/storybook/dist/proxy.cjs
+- ./node_modules/.pnpm/storybook@8.6.18/node_modules/storybook/bin/index.cjs[39m
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1383:15)
+    at Module._resolveFilename (./node_modules/.pnpm/esbuild-register@3.6.0_esbuild@0.25.12/node_modules/esbuild-register/dist/node.js:4794:36)
+    at <anonymous> (./node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/src/server/require-hook.ts:65:34)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at scopedResolve (./node_modules/.pnpm/@storybook+nextjs@8.6.18_esbuild@0.25.12_next@16.2.7_@babel+core@7.29.7_react-dom@19.2.4_reac_u5xoh5k7tp75m2lue5g45u3c7y/node_modules/@storybook/nextjs/dist/preset.js:1:9564)
+    at addScopedAlias (./node_modules/.pnpm/@storybook+nextjs@8.6.18_esbuild@0.25.12_next@16.2.7_@babel+core@7.29.7_react-dom@19.2.4_reac_u5xoh5k7tp75m2lue5g45u3c7y/node_modules/@storybook/nextjs/dist/preset.js:1:9339)
+    at configureConfig (./node_modules/.pnpm/@storybook+nextjs@8.6.18_esbuild@0.25.12_next@16.2.7_@babel+core@7.29.7_react-dom@19.2.4_reac_u5xoh5k7tp75m2lue5g45u3c7y/node_modules/@storybook/nextjs/dist/preset.js:1:26405)
+    at async Object.core (./node_modules/.pnpm/@storybook+nextjs@8.6.18_esbuild@0.25.12_next@16.2.7_@babel+core@7.29.7_react-dom@19.2.4_reac_u5xoh5k7tp75m2lue5g45u3c7y/node_modules/@storybook/nextjs/dist/preset.js:1:32750)
+    at async buildStaticStandalone (./node_modules/.pnpm/@storybook+core@8.6.18_storybook@8.6.18/node_modules/@storybook/core/dist/core-server/index.cjs:36918:25)
+    at async withTelemetry (./node_modules/.pnpm/@storybook+core@8.6.18_storybook@8.6.18/node_modules/@storybook/core/dist/core-server/index.cjs:37269:12)
+
+[35m[1mattention[22m[39m => Storybook now collects completely anonymous telemetry regarding usage.
+This information is used to shape Storybook's roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+[36mhttps://storybook.js.org/telemetry[39m
+
+ ELIFECYCLE  Command failed with exit code 1.
