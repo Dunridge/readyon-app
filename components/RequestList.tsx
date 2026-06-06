@@ -12,10 +12,10 @@ interface RequestListProps {
 }
 
 const STATUS_STYLES: Record<TimeOffRequest['status'], string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  approved: 'bg-green-100 text-green-800',
-  denied: 'bg-red-100 text-red-800',
-  cancelled: 'bg-gray-100 text-gray-600',
+  pending: 'bg-[#1a1500] text-[#e8b800] border border-[#3a3000]',
+  approved: 'bg-[#001a0a] text-[#4ade80] border border-[#003a14]',
+  denied: 'bg-[#1a0505] text-[#f87171] border border-[#3a1010]',
+  cancelled: 'bg-[#141414] text-[#555] border border-[#2a2a2a]',
 };
 
 function formatDate(iso: string) {
@@ -30,77 +30,61 @@ export function RequestList({
 }: RequestListProps) {
   if (isLoading) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-2">
         {[1, 2].map((i) => (
-          <div key={i} className="animate-pulse rounded-lg border border-gray-200 bg-white p-4">
-            <div className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
-            <div className="h-3 bg-gray-200 rounded w-2/3" />
-          </div>
+          <div key={i} className="animate-pulse rounded-lg border border-[#1f1f1f] bg-[#111] h-16" />
         ))}
       </div>
     );
   }
 
-  const pendingOptimistic = optimisticRequests.filter(
-    (r) => r.state !== 'rolled-back'
-  );
+  const pendingOptimistic = optimisticRequests.filter((r) => r.state !== 'rolled-back');
 
   if (isEmpty && pendingOptimistic.length === 0) {
     return (
-      <div className="rounded-lg border-2 border-dashed border-gray-200 p-8 text-center">
-        <p className="text-gray-500 text-sm">No time-off requests yet.</p>
+      <div className="rounded-xl border border-dashed border-[#2a2a2a] p-12 text-center">
+        <p className="text-[#444] text-sm">No requests yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
-      {/* Optimistic (in-flight) requests */}
+    <div className="space-y-2">
       {pendingOptimistic.map((opt) => (
         <div
           key={opt.localId}
-          className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 opacity-80"
+          className="rounded-lg border border-[#1a2a3a] bg-[#0a1520] px-4 py-3"
         >
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-gray-800">
-                {opt.daysRequested} day(s) — {opt.locationId}
+              <p className="text-sm font-medium text-white">
+                {opt.daysRequested} day{opt.daysRequested !== 1 ? 's' : ''} · {opt.locationId}
               </p>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Submitted just now
-              </p>
+              <p className="text-xs text-[#444] mt-0.5">Just now</p>
             </div>
             <OptimisticBadge state={opt.state} errorMessage={opt.errorMessage} />
           </div>
         </div>
       ))}
 
-      {/* Real server requests */}
       {requests.map((req) => (
-        <div
-          key={req.id}
-          className="rounded-lg border border-gray-200 bg-white p-4"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
+        <div key={req.id} className="rounded-lg border border-[#1f1f1f] bg-[#111] px-4 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <p className="text-sm font-semibold text-gray-800">
-                  {req.daysRequested} day(s)
+                <p className="text-sm font-medium text-white">
+                  {req.daysRequested} day{req.daysRequested !== 1 ? 's' : ''}
                 </p>
-                <span
-                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[req.status]}`}
-                >
+                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${STATUS_STYLES[req.status]}`}>
                   {req.status}
                 </span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-[#555] mt-0.5 truncate">
                 {formatDate(req.startDate)} – {formatDate(req.endDate)}
-                {req.reason && <span className="ml-2 text-gray-400">· {req.reason}</span>}
-              </p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Location: {req.locationId} · Submitted {formatDate(req.createdAt)}
+                {req.reason && <span className="text-[#444]"> · {req.reason}</span>}
               </p>
             </div>
+            <span className="text-xs text-[#333] flex-shrink-0">{req.locationId}</span>
           </div>
         </div>
       ))}
