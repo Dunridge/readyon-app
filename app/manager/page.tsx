@@ -16,7 +16,6 @@ const EMPLOYEE_NAMES: Record<string, string> = {
 function ManagerRequestItem({ request }: { request: import('@/lib/types').TimeOffRequest }) {
   const { approveMutation, denyMutation } = useManagerActionMutation();
 
-  // Re-fetch fresh balance just-in-time for decision context
   const {
     data: balance,
     isLoading: balanceIsLoading,
@@ -44,38 +43,41 @@ export default function ManagerPage() {
   const { data: pendingRequests, isLoading, isFetching } = usePendingRequests();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <div className="min-h-screen bg-[#0a0a0a]">
+      <header className="border-b border-[#1f1f1f] px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div>
-            <Link href="/" className="text-sm text-indigo-600 hover:text-indigo-800 mb-1 block">
-              ← Home
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-[#555] hover:text-[#888] transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
             </Link>
-            <h1 className="text-xl font-bold text-gray-900">Pending Approvals</h1>
-            <p className="text-sm text-gray-500">Bob Smith · emp-002 · Manager</p>
+            <div>
+              <h1 className="text-base font-semibold text-white tracking-tight">Pending Approvals</h1>
+              <p className="text-xs text-[#555] mt-0.5">Bob Smith · Manager</p>
+            </div>
           </div>
           {isFetching && (
-            <span className="text-xs text-gray-400 animate-pulse">Refreshing...</span>
+            <span className="text-xs text-[#444] animate-pulse">Syncing...</span>
           )}
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse rounded-xl border border-gray-200 bg-white p-5 h-40" />
+              <div key={i} className="animate-pulse rounded-xl border border-[#1f1f1f] bg-[#111] h-40" />
             ))}
           </div>
         ) : !pendingRequests?.length ? (
-          <div className="rounded-xl border-2 border-dashed border-gray-200 p-12 text-center">
-            <p className="text-gray-500">No pending requests to review.</p>
+          <div className="rounded-xl border border-dashed border-[#2a2a2a] p-16 text-center">
+            <p className="text-[#555] text-sm">No pending requests.</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-500">
-              {pendingRequests.length} request{pendingRequests.length !== 1 ? 's' : ''} pending
+          <div className="space-y-3">
+            <p className="text-xs text-[#444] mb-4">
+              {pendingRequests.length} request{pendingRequests.length !== 1 ? 's' : ''} awaiting review
             </p>
             {pendingRequests.map((req) => (
               <ManagerRequestItem key={req.id} request={req} />

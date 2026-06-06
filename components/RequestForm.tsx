@@ -26,6 +26,11 @@ function calcBusinessDays(start: string, end: string): number {
   return days;
 }
 
+const inputClass =
+  'w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] text-white px-3 py-2.5 text-sm placeholder-[#444] focus:outline-none focus:border-[#444] focus:bg-[#111] transition-colors';
+
+const labelClass = 'block text-xs font-medium text-[#888] mb-1.5 uppercase tracking-wide';
+
 export function RequestForm({ employeeId, balances, onSuccess }: RequestFormProps) {
   const [locationId, setLocationId] = useState(balances[0]?.locationId ?? '');
   const [startDate, setStartDate] = useState('');
@@ -55,20 +60,12 @@ export function RequestForm({ employeeId, balances, onSuccess }: RequestFormProp
     if (daysRequested <= 0) return setFormError('End date must be on or after start date.');
     if (daysRequested > displayAvailable) {
       return setFormError(
-        `Insufficient balance. You have ${displayAvailable} day(s) available but requested ${daysRequested}.`
+        `Insufficient balance: ${displayAvailable} day(s) available, ${daysRequested} requested.`
       );
     }
 
     try {
-      await mutation.mutateAsync({
-        employeeId,
-        locationId,
-        startDate,
-        endDate,
-        daysRequested,
-        reason,
-      });
-      // Reset form
+      await mutation.mutateAsync({ employeeId, locationId, startDate, endDate, daysRequested, reason });
       setStartDate('');
       setEndDate('');
       setReason('');
@@ -81,85 +78,72 @@ export function RequestForm({ employeeId, balances, onSuccess }: RequestFormProp
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Location */}
       <div>
-        <label htmlFor="locationId" className="block text-sm font-medium text-gray-700 mb-1">
-          Location
-        </label>
+        <label htmlFor="locationId" className={labelClass}>Location</label>
         <select
           id="locationId"
           value={locationId}
           onChange={(e) => setLocationId(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className={inputClass}
         >
           {balances.map((b) => (
             <option key={b.locationId} value={b.locationId}>
-              {b.locationName} ({b.availableDays - getOptimisticDeductions(employeeId, b.locationId)} days available)
+              {b.locationName} — {b.availableDays - getOptimisticDeductions(employeeId, b.locationId)} days available
             </option>
           ))}
         </select>
       </div>
 
-      {/* Date range */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
-            Start Date
-          </label>
+          <label htmlFor="startDate" className={labelClass}>Start</label>
           <input
             id="startDate"
             type="date"
             value={startDate}
             min={new Date().toISOString().split('T')[0]}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className={inputClass}
           />
         </div>
         <div>
-          <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
-            End Date
-          </label>
+          <label htmlFor="endDate" className={labelClass}>End</label>
           <input
             id="endDate"
             type="date"
             value={endDate}
             min={startDate || new Date().toISOString().split('T')[0]}
             onChange={(e) => setEndDate(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className={inputClass}
           />
         </div>
       </div>
 
-      {/* Days preview */}
       {daysRequested > 0 && (
-        <div className="rounded-lg bg-indigo-50 border border-indigo-200 px-3 py-2 text-sm text-indigo-700">
-          <span className="font-semibold">{daysRequested}</span> business day(s) requested
+        <div className="rounded-lg bg-[#0d1520] border border-[#1a3050] px-4 py-2.5 text-sm text-[#7eb8f7]">
+          <span className="font-semibold">{daysRequested}</span> business day{daysRequested !== 1 ? 's' : ''}
           {selectedBalance && (
-            <span className="text-indigo-500">
-              {' '}· {displayAvailable} available
-            </span>
+            <span className="text-[#4a7fa8]"> · {displayAvailable} available</span>
           )}
         </div>
       )}
 
-      {/* Reason */}
       <div>
-        <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-1">
-          Reason <span className="text-gray-400 font-normal">(optional)</span>
+        <label htmlFor="reason" className={labelClass}>
+          Reason <span className="text-[#444] normal-case font-normal">(optional)</span>
         </label>
         <textarea
           id="reason"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           rows={2}
-          placeholder="Vacation, medical appointment, personal..."
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+          placeholder="Vacation, personal..."
+          className={`${inputClass} resize-none`}
         />
       </div>
 
-      {/* Error */}
       {formError && (
-        <div className="rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-lg bg-[#1a0505] border border-[#3a1010] px-4 py-2.5 text-sm text-[#f87171]">
           {formError}
         </div>
       )}
@@ -167,7 +151,7 @@ export function RequestForm({ employeeId, balances, onSuccess }: RequestFormProp
       <button
         type="submit"
         disabled={mutation.isPending}
-        className="w-full rounded-lg bg-indigo-600 text-white py-2.5 text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full rounded-lg bg-white text-black py-2.5 text-sm font-semibold hover:bg-[#e8e8e8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {mutation.isPending ? 'Submitting...' : 'Submit Request'}
       </button>

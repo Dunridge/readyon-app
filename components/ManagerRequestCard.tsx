@@ -9,17 +9,13 @@ interface ManagerRequestCardProps {
   employeeName?: string;
   balance?: Balance;
   balanceIsLoading?: boolean;
-  balanceFetchedAt?: number; // timestamp
+  balanceFetchedAt?: number;
   onApprove: (requestId: string) => Promise<void>;
   onDeny: (requestId: string) => Promise<void>;
 }
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 export function ManagerRequestCard({
@@ -34,12 +30,8 @@ export function ManagerRequestCard({
   const [actionState, setActionState] = useState<'idle' | 'approving' | 'denying' | 'done' | 'error'>('idle');
   const [actionError, setActionError] = useState('');
 
-  const isDataStale =
-    balanceFetchedAt != null && Date.now() - balanceFetchedAt > 2 * 60 * 1000;
-
-  const hasSufficientBalance = balance
-    ? balance.availableDays >= request.daysRequested
-    : null;
+  const isDataStale = balanceFetchedAt != null && Date.now() - balanceFetchedAt > 2 * 60 * 1000;
+  const hasSufficientBalance = balance ? balance.availableDays >= request.daysRequested : null;
 
   const handleApprove = async () => {
     setActionState('approving');
@@ -67,37 +59,38 @@ export function ManagerRequestCard({
 
   if (actionState === 'done') {
     return (
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 opacity-60">
-        <p className="text-sm text-gray-500 text-center">Action completed.</p>
+      <div className="rounded-xl border border-[#1f1f1f] bg-[#0d0d0d] p-5 opacity-40">
+        <p className="text-sm text-[#555] text-center">Action recorded.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-4">
+    <div className="rounded-xl border border-[#1f1f1f] bg-[#111] p-5 space-y-4">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-gray-800">
+          <h3 className="text-sm font-semibold text-white">
             {employeeName ?? request.employeeId}
           </h3>
-          <p className="text-xs text-gray-500 mt-0.5">
-            {formatDate(request.startDate)} – {formatDate(request.endDate)} ·{' '}
-            <span className="font-medium text-gray-700">{request.daysRequested} day(s)</span>
+          <p className="text-xs text-[#555] mt-0.5">
+            {formatDate(request.startDate)} – {formatDate(request.endDate)}
+            {' · '}
+            <span className="text-[#888]">{request.daysRequested} day{request.daysRequested !== 1 ? 's' : ''}</span>
           </p>
           {request.reason && (
-            <p className="text-xs text-gray-400 mt-1 italic">&ldquo;{request.reason}&rdquo;</p>
+            <p className="text-xs text-[#444] mt-1 italic">&ldquo;{request.reason}&rdquo;</p>
           )}
         </div>
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 flex-shrink-0">
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#1a1500] text-[#e8b800] border border-[#3a3000] flex-shrink-0">
           Pending
         </span>
       </div>
 
       {/* Balance context */}
-      <div className="rounded-lg bg-gray-50 border border-gray-100 p-3">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-medium text-gray-600">Employee Balance</span>
+      <div className="rounded-lg bg-[#0d0d0d] border border-[#1a1a1a] p-3">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs text-[#555] uppercase tracking-wide">Employee Balance</span>
           {balanceFetchedAt && (
             <StalenessIndicator
               lastUpdated={new Date(balanceFetchedAt).toISOString()}
@@ -106,57 +99,52 @@ export function ManagerRequestCard({
           )}
         </div>
         {balanceIsLoading ? (
-          <div className="animate-pulse h-4 bg-gray-200 rounded w-1/2" />
+          <div className="animate-pulse h-4 bg-[#1f1f1f] rounded w-1/2" />
         ) : balance ? (
           <div className="flex items-center gap-3">
-            <span
-              className={`text-lg font-bold ${
-                hasSufficientBalance ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {balance.availableDays} days available
+            <span className={`text-xl font-bold ${hasSufficientBalance ? 'text-[#4ade80]' : 'text-[#f87171]'}`}>
+              {balance.availableDays} days
             </span>
-            <span className="text-xs text-gray-400">
-              ({balance.usedDays} used / {balance.totalDays} total)
+            <span className="text-xs text-[#444]">
+              {balance.usedDays} used / {balance.totalDays} total
             </span>
           </div>
         ) : (
-          <p className="text-xs text-gray-400">Balance data unavailable</p>
+          <p className="text-xs text-[#444]">Balance unavailable</p>
         )}
 
         {hasSufficientBalance === false && (
-          <p className="mt-1.5 text-xs text-red-600 font-medium">
-            Warning: Insufficient balance for this request.
+          <p className="mt-1.5 text-xs text-[#f87171]">
+            Insufficient balance for this request.
           </p>
         )}
 
         {isDataStale && (
-          <p className="mt-1.5 text-xs text-amber-600">
-            Balance data may be outdated. Consider refreshing before deciding.
+          <p className="mt-1.5 text-xs text-[#b8860b]">
+            Balance data may be stale. Consider refreshing before deciding.
           </p>
         )}
       </div>
 
-      {/* Error */}
       {actionState === 'error' && actionError && (
-        <div className="rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700">
+        <div className="rounded-lg bg-[#1a0505] border border-[#3a1010] px-3 py-2 text-xs text-[#f87171]">
           {actionError}
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <button
           onClick={handleApprove}
           disabled={actionState === 'approving' || actionState === 'denying'}
-          className="flex-1 rounded-lg bg-green-600 text-white py-2 text-sm font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex-1 rounded-lg bg-white text-black py-2 text-sm font-semibold hover:bg-[#e8e8e8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {actionState === 'approving' ? 'Approving...' : 'Approve'}
         </button>
         <button
           onClick={handleDeny}
           disabled={actionState === 'approving' || actionState === 'denying'}
-          className="flex-1 rounded-lg border border-red-300 text-red-700 py-2 text-sm font-semibold hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex-1 rounded-lg bg-[#1a0505] border border-[#3a1010] text-[#f87171] py-2 text-sm font-semibold hover:bg-[#200808] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {actionState === 'denying' ? 'Denying...' : 'Deny'}
         </button>

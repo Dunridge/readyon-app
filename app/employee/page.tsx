@@ -44,33 +44,40 @@ export default function EmployeePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0a0a0a]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="border-b border-[#1f1f1f] px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div>
-            <Link href="/" className="text-sm text-indigo-600 hover:text-indigo-800 mb-1 block">
-              ← Home
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-[#555] hover:text-[#888] transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
             </Link>
-            <h1 className="text-xl font-bold text-gray-900">My Time Off</h1>
-            <p className="text-sm text-gray-500">Alice Johnson · emp-001</p>
+            <div>
+              <h1 className="text-base font-semibold text-white tracking-tight">My Time Off</h1>
+              <p className="text-xs text-[#555] mt-0.5">Alice Johnson · emp-001</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             {balancesFetching && (
-              <span className="text-xs text-gray-400 animate-pulse">Refreshing...</span>
+              <span className="text-xs text-[#444] animate-pulse">Syncing...</span>
             )}
             <button
               onClick={() => setShowForm((v) => !v)}
-              className="rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-semibold hover:bg-indigo-700 transition-colors"
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                showForm
+                  ? 'bg-[#1c1c1c] border border-[#2a2a2a] text-[#888] hover:text-white'
+                  : 'bg-white text-black hover:bg-[#e8e8e8]'
+              }`}
             >
-              {showForm ? 'Cancel' : '+ New Request'}
+              {showForm ? 'Cancel' : '+ Request'}
             </button>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-8 space-y-8">
-        {/* Verification warning banner */}
         <VerificationWarningBanner
           count={verificationWarningCount}
           onRefresh={handleRefresh}
@@ -79,28 +86,22 @@ export default function EmployeePage() {
         {/* Balances */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-gray-800">Leave Balances</h2>
+            <h2 className="text-sm font-medium text-[#888] uppercase tracking-wider">Leave Balances</h2>
             {balancesUpdatedAt > 0 && (
-              <span className="text-xs text-gray-400">
-                Last updated {new Date(balancesUpdatedAt).toLocaleTimeString()}
+              <span className="text-xs text-[#444]">
+                Updated {new Date(balancesUpdatedAt).toLocaleTimeString()}
               </span>
             )}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {balancesLoading
               ? [1, 2].map((i) => <BalanceCardSkeleton key={i} />)
               : balances?.map((balance) => (
                   <BalanceCard
                     key={balance.locationId}
                     balance={balance}
-                    optimisticDeductions={getOptimisticDeductions(
-                      EMPLOYEE_ID,
-                      balance.locationId
-                    )}
-                    isStale={
-                      balancesUpdatedAt > 0 &&
-                      Date.now() - balancesUpdatedAt > 2 * 60 * 1000
-                    }
+                    optimisticDeductions={getOptimisticDeductions(EMPLOYEE_ID, balance.locationId)}
+                    isStale={balancesUpdatedAt > 0 && Date.now() - balancesUpdatedAt > 2 * 60 * 1000}
                   />
                 ))}
           </div>
@@ -108,8 +109,8 @@ export default function EmployeePage() {
 
         {/* Request form */}
         {showForm && balances && balances.length > 0 && (
-          <section className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-base font-semibold text-gray-800 mb-4">New Time-Off Request</h2>
+          <section className="bg-[#111] rounded-xl border border-[#222] p-6">
+            <h2 className="text-sm font-medium text-white mb-5">New Request</h2>
             <RequestForm
               employeeId={EMPLOYEE_ID}
               balances={balances}
@@ -120,7 +121,7 @@ export default function EmployeePage() {
 
         {/* Requests */}
         <section>
-          <h2 className="text-base font-semibold text-gray-800 mb-4">My Requests</h2>
+          <h2 className="text-sm font-medium text-[#888] uppercase tracking-wider mb-4">Request History</h2>
           <RequestList
             requests={requests ?? []}
             optimisticRequests={optimisticRequests}
