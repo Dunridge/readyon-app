@@ -95,8 +95,8 @@ Zustand owns `OptimisticRequest[]` — entries that represent in-flight writes n
 ### Tailwind CSS v4
 Already present. Used throughout for all styling. No additional CSS files created.
 
-### Storybook 8 with `@storybook/nextjs`
-Provides component isolation and visual regression baseline. The `@storybook/nextjs` framework handles Next.js-specific imports (fonts, navigation) automatically in story context.
+### Storybook 8 with `@storybook/react-vite`
+Provides component isolation and visual regression baseline. Originally configured with `@storybook/nextjs`, but Next.js 16 removed `next/config` which that adapter depends on. Switched to `@storybook/react-vite` for compatibility — stories are pure React components with no Next.js-specific imports, so there is no functional difference. A known limitation is that the `balance-refreshed-mid-session` story validates display math statically rather than live-triggering the anniversary endpoint, since MSW addon has the same Next.js 16 peer dep conflict.
 
 ### Vitest + Testing Library
 Vitest runs in JSDOM environment. Testing Library provides `render`, `screen`, `fireEvent`, `waitFor`. All tests are co-located in `__tests__/` and run in under 2 seconds.

@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "storybook": "storybook dev -p 6006",
-    "build:storybook": "storybook build -o storybook-static"
+    "build-storybook": "storybook build -o storybook-static",
+    "chromatic": "chromatic --exit-zero-on-changes"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.0",
@@ -24,7 +25,8 @@
   "devDependencies": {
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/addon-interactions": "^8.6.14",
-    "@storybook/nextjs": "^8.6.18",
+    "@storybook/react": "^8.6.18",
+    "@storybook/react-vite": "^8.6.18",
     "@storybook/test": "^8.6.18",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
@@ -33,7 +35,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^6.0.2",
+    "@vitejs/plugin-react": "^4.7.0",
+    "chromatic": "^17.3.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
     "jsdom": "^29.1.1",
@@ -41,6 +44,7 @@
     "storybook": "^8.6.18",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vite": "^6.4.3",
     "vitest": "^4.1.8"
   },
   "msw": {
